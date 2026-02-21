@@ -1,0 +1,258 @@
+{
+  "info": {
+    "name": "Expense Tracker API",
+    "description": "REST API for Expense Tracking and Bill Splitting (Splitwise-like)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User - Alice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User - Bob",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bob Smith\",\n  \"email\": \"bob@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User - Charlie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Charlie Brown\",\n  \"email\": \"charlie@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Groups",
+      "item": [
+        {
+          "name": "Create Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Weekend Trip\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/groups",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups"]
+            }
+          }
+        },
+        {
+          "name": "Add Alice to Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/1/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "1", "members"]
+            }
+          }
+        },
+        {
+          "name": "Add Bob to Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/1/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "1", "members"]
+            }
+          }
+        },
+        {
+          "name": "Add Charlie to Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/1/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "1", "members"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Expenses",
+      "item": [
+        {
+          "name": "Add Expense - Dinner ($120)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Dinner at Italian Restaurant\",\n  \"amount\": \"120.00\",\n  \"paid_by_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/1/expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "1", "expenses"]
+            }
+          }
+        },
+        {
+          "name": "Add Expense - Gas ($80)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Gas for Road Trip\",\n  \"amount\": \"80.00\",\n  \"paid_by_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/1/expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "1", "expenses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Balances & Settlements",
+      "item": [
+        {
+          "name": "Get Group Balances",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/1/balances",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "1", "balances"]
+            }
+          }
+        },
+        {
+          "name": "Get Settlements",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/1/settlements",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "1", "settlements"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

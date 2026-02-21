@@ -17,8 +17,6 @@ A **full-stack expense tracking and debt settlement application** built with Go 
 9. [Example Scenarios](#-example-scenarios)
 10. [Setup & Running Instructions](#-setup--running-instructions)
 11. [Project Structure](#-project-structure)
-12. [AI Prompts Used](#-ai-prompts-used)
-
 ---
 
 ## 🏗 Architecture Overview
@@ -874,33 +872,6 @@ expense-tracker/
         └── lib/
             └── utils.js       # Utility functions
 ```
-
----
-
-## 🤖 AI Prompts Used
-
-The following AI-assisted prompts were used during development via **Antigravity (Google DeepMind Coding Agent)**:
-
-### Backend Development Prompts
-
-1. **Initial project setup**: *"Build a full-stack expense tracker application with Go backend (Gin + GORM + SQLite) and React frontend. Include user management, group expenses, balance calculation, and debt settlement using a greedy algorithm with shopspring/decimal for precise money handling."*
-
-2. **CGO-free SQLite driver fix**: *"Replace gorm.io/driver/sqlite with a CGO-free alternative so the project compiles without CGO on Windows."*
-
-3. **CORS configuration**: *"Fix 403 Forbidden CORS errors — update the backend CORS configuration to allow frontend requests from localhost during development."*
-
-### Frontend Development Prompts
-
-4. **Frontend scaffolding**: *"Create the React frontend with Vite, ShadCN UI, and Tailwind CSS. Build pages for Dashboard, Users, Groups, Expenses, and Settlements with a sidebar navigation layout."*
-
-### Enhancement Prompts
-
-5. **Feature enhancements**: *"Enhance the app by adding: (1) expense history showing who contributed what, (2) live dashboard with real-time stats, and (3) dynamic group listing with member visibility. It should be useful in real-time without affecting current working features."*
-
-6. **Documentation**: *"Create a structured README file with: complete API documentation, database schema with money type explanation, settlement algorithm with examples, frontend screenshots, backend API proof, and AI prompts used."*
-
----
-
 ## 📝 License
 
 This project was built for educational and demonstration purposes.

@@ -818,59 +818,23 @@ expense-tracker/
 ├── main.go                    # Application entry point
 ├── go.mod                     # Go module dependencies
 ├── go.sum                     # Dependency checksums
-├── expense_tracker.db         # SQLite database (auto-created)
+├── .env.example               # Environment configuration template
 │
-├── config/
-│   └── config.go              # Database connection setup
-│
-├── models/
-│   └── models.go              # Data models & DTOs
-│
-├── repository/
-│   └── repository.go          # Database access layer
-│
-├── services/
-│   └── services.go            # Business logic & settlement algorithm
-│
-├── handlers/
-│   └── handlers.go            # HTTP handlers
-│
-├── routes/
-│   └── routes.go              # Route definitions
-│
-├── seed/
-│   └── seed.go                # Database seeder with sample data
+├── config/                    # Database configuration
+├── models/                    # Data models
+├── repository/                # Database access layer
+├── services/                  # Business logic & settlement algorithm
+├── handlers/                  # HTTP handlers
+├── routes/                    # API route definitions
+├── seed/                      # Sample seed data
 │
 ├── docs/                      # Screenshots & API proof
-│   ├── screenshot_dashboard.png
-│   ├── screenshot_users.png
-│   ├── screenshot_groups.png
-│   ├── screenshot_expenses_form.png
-│   ├── screenshot_expense_history.png
-│   └── screenshot_settlements.png
 │
-└── frontend/                  # React frontend
-    ├── package.json
-    ├── vite.config.js
-    ├── tailwind.config.js
-    ├── index.html
-    └── src/
-        ├── main.jsx           # App entry + routing
-        ├── App.jsx            # Root component
-        ├── index.css          # Global styles
-        ├── services/
-        │   └── api.js         # API client (Axios)
-        ├── pages/
-        │   ├── Dashboard.jsx  # Live stats & activity feed
-        │   ├── Users.jsx      # User management
-        │   ├── Groups.jsx     # Group management with members
-        │   ├── Expenses.jsx   # Expense form, balances & history
-        │   └── Settlements.jsx # Optimal settlement view
-        ├── layout/
-        │   └── Layout.jsx     # Sidebar navigation
-        ├── components/ui/     # ShadCN UI components
-        └── lib/
-            └── utils.js       # Utility functions
+└── frontend/                  # React + Tailwind frontend
+    ├── pages/                 # Application pages
+    ├── layout/                # Layout components
+    ├── services/              # API client
+    └── components/            # Reusable UI components
 ```
 ## 📝 License
 

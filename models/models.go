@@ -38,8 +38,8 @@ type Expense struct {
 	PaidByID    uint            `json:"paid_by_id" gorm:"not null"`
 
 	// Relationships
-	Group  Group  `json:"group,omitempty" gorm:"foreignKey:GroupID"`
-	PaidBy User   `json:"paid_by,omitempty" gorm:"foreignKey:PaidByID"`
+	Group  Group          `json:"group,omitempty" gorm:"foreignKey:GroupID"`
+	PaidBy User           `json:"paid_by,omitempty" gorm:"foreignKey:PaidByID"`
 	Splits []ExpenseSplit `json:"splits,omitempty" gorm:"foreignKey:ExpenseID"`
 
 	CreatedAt time.Time `json:"created_at"`
@@ -76,6 +76,22 @@ type Settlement struct {
 	ToUserID     uint            `json:"to_user_id"`
 	ToUserName   string          `json:"to_user_name"`
 	Amount       decimal.Decimal `json:"amount"`
+}
+
+// DashboardStats holds aggregate statistics for the dashboard.
+type DashboardStats struct {
+	TotalUsers    int64           `json:"total_users"`
+	TotalGroups   int64           `json:"total_groups"`
+	TotalExpenses int64           `json:"total_expenses"`
+	TotalSpent    decimal.Decimal `json:"total_spent"`
+}
+
+// GroupWithStats is a group enriched with member count for listing.
+type GroupWithStats struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	MemberCount int    `json:"member_count"`
+	CreatedAt   string `json:"created_at"`
 }
 
 // --- Request DTOs ---

@@ -83,17 +83,28 @@ func (s *Service) AddUserToGroup(groupID, userID uint) (*models.Group, error) {
 	return s.repo.GetGroupByID(groupID)
 }
 
+// GetGroupMembers returns all members of a group.
+func (s *Service) GetGroupMembers(groupID uint) ([]models.User, error) {
+	return s.repo.GetGroupMembers(groupID)
+}
+
+// GetUserGroups returns all groups associated with a user.
+func (s *Service) GetUserGroups(userID uint) ([]models.Group, error) {
+	return s.repo.GetUserGroups(userID)
+}
+
 // --- Expense Operations ---
 
 // CreateExpense validates inputs, computes equal splits, and creates the expense
 // with all splits in a single database transaction.
 //
 // Split Calculation:
-//   For an amount of $100.00 split among 3 users:
-//   - Base split: 100.00 / 3 = 33.33 (truncated to 2 decimal places)
-//   - Remainder: 100.00 - (33.33 × 3) = 100.00 - 99.99 = 0.01
-//   - First user gets 33.34, second and third get 33.33
-//   - This ensures the splits always sum exactly to the original amount.
+//
+//	For an amount of $100.00 split among 3 users:
+//	- Base split: 100.00 / 3 = 33.33 (truncated to 2 decimal places)
+//	- Remainder: 100.00 - (33.33 × 3) = 100.00 - 99.99 = 0.01
+//	- First user gets 33.34, second and third get 33.33
+//	- This ensures the splits always sum exactly to the original amount.
 func (s *Service) CreateExpense(groupID uint, req models.CreateExpenseRequest) (*models.Expense, error) {
 	// Validate the amount is positive.
 	if req.Amount.LessThanOrEqual(decimal.Zero) {
@@ -161,10 +172,10 @@ func (s *Service) CreateExpense(groupID uint, req models.CreateExpenseRequest) (
 
 	// Create the expense record.
 	expense := &models.Expense{
-		GroupID:      groupID,
-		Description:  req.Description,
-		Amount:       req.Amount,
-		PaidByID:     req.PaidByID,
+		GroupID:     groupID,
+		Description: req.Description,
+		Amount:      req.Amount,
+		PaidByID:    req.PaidByID,
 	}
 
 	// Persist expense and splits atomically within a transaction.
@@ -175,6 +186,24 @@ func (s *Service) CreateExpense(groupID uint, req models.CreateExpenseRequest) (
 
 	expense.Splits = splits
 	return expense, nil
+}
+
+// ListGroups returns all groups with their stats.
+func (s *Service) ListGroups() ([]models.GroupWithStats, error) {
+	return s.repo.ListGroups()
+}
+
+// GetGroupExpenses returns all expenses for a group with full details.
+func (s *Service) GetGroupExpenses(groupID uint) ([]models.Expense, error) {
+	if _, err := s.repo.GetGroupByID(groupID); err != nil {
+		return nil, fmt.Errorf("group not found: %w", err)
+	}
+	return s.repo.GetGroupExpenses(groupID)
+}
+
+// GetDashboardStats returns aggregate statistics for the dashboard.
+func (s *Service) GetDashboardStats() (*models.DashboardStats, error) {
+	return s.repo.GetDashboardStats()
 }
 
 // --- Balance & Settlement Operations ---
@@ -202,14 +231,14 @@ func (s *Service) GetSettlements(groupID uint) ([]models.Settlement, error) {
 // of settlement transactions needed to resolve all debts.
 //
 // Algorithm Overview:
-//   1. Separate users into creditors (positive balance = owed money)
-//      and debtors (negative balance = owe money).
-//   2. Sort creditors descending by balance and debtors ascending (most debt first).
-//   3. Match the largest creditor with the largest debtor:
-//      - Transfer amount = min(credit, |debt|)
-//      - Reduce both balances by the transfer amount.
-//      - If a balance reaches zero, move to the next creditor/debtor.
-//   4. Repeat until all balances are settled.
+//  1. Separate users into creditors (positive balance = owed money)
+//     and debtors (negative balance = owe money).
+//  2. Sort creditors descending by balance and debtors ascending (most debt first).
+//  3. Match the largest creditor with the largest debtor:
+//     - Transfer amount = min(credit, |debt|)
+//     - Reduce both balances by the transfer amount.
+//     - If a balance reaches zero, move to the next creditor/debtor.
+//  4. Repeat until all balances are settled.
 //
 // Time Complexity: O(n log n) for sorting + O(n) for settlement = O(n log n) overall,
 // where n is the number of users with non-zero balances.

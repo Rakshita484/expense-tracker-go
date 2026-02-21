@@ -123,8 +123,9 @@ func (r *Repository) CreateExpenseWithSplits(expense *models.Expense, splits []m
 // GetGroupBalances calculates the net balance for each user in a group.
 //
 // The balance is computed as:
-//   total_paid (sum of expenses the user paid for)
-//   - total_owed (sum of splits assigned to the user)
+//
+//	total_paid (sum of expenses the user paid for)
+//	- total_owed (sum of splits assigned to the user)
 //
 // A positive balance means the user is owed money by others.
 // A negative balance means the user owes money to others.
@@ -176,13 +177,86 @@ func (r *Repository) GetGroupBalances(groupID uint) ([]models.UserBalance, error
 	return balances, nil
 }
 
-// GetGroupMembers returns the count of members in a group.
+// GetGroupMembers returns the members of a group.
 func (r *Repository) GetGroupMembers(groupID uint) ([]models.User, error) {
 	var group models.Group
 	if err := r.db.Preload("Members").First(&group, groupID).Error; err != nil {
 		return nil, fmt.Errorf("group not found with id %d: %w", groupID, err)
 	}
 	return group.Members, nil
+}
+
+// GetUserGroups returns all groups a user is a member of.
+func (r *Repository) GetUserGroups(userID uint) ([]models.Group, error) {
+	var groups []models.Group
+	err := r.db.Table("groups").
+		Joins("JOIN group_members ON group_members.group_id = groups.id").
+		Where("group_members.user_id = ?", userID).
+		Find(&groups).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch user groups: %w", err)
+	}
+	return groups, nil
+}
+
+// ListGroups returns all groups with their member counts.
+func (r *Repository) ListGroups() ([]models.GroupWithStats, error) {
+	var groups []models.Group
+	if err := r.db.Preload("Members").Find(&groups).Error; err != nil {
+		return nil, fmt.Errorf("failed to list groups: %w", err)
+	}
+
+	result := make([]models.GroupWithStats, len(groups))
+	for i, g := range groups {
+		result[i] = models.GroupWithStats{
+			ID:          g.ID,
+			Name:        g.Name,
+			MemberCount: len(g.Members),
+			CreatedAt:   g.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		}
+	}
+	return result, nil
+}
+
+// GetGroupExpenses returns all expenses for a group with payer info and splits.
+func (r *Repository) GetGroupExpenses(groupID uint) ([]models.Expense, error) {
+	var expenses []models.Expense
+	if err := r.db.
+		Where("group_id = ?", groupID).
+		Preload("PaidBy").
+		Preload("Splits").
+		Preload("Splits.User").
+		Order("created_at DESC").
+		Find(&expenses).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch group expenses: %w", err)
+	}
+	return expenses, nil
+}
+
+// GetDashboardStats returns aggregate statistics for the dashboard.
+func (r *Repository) GetDashboardStats() (*models.DashboardStats, error) {
+	stats := &models.DashboardStats{}
+
+	if err := r.db.Model(&models.User{}).Count(&stats.TotalUsers).Error; err != nil {
+		return nil, fmt.Errorf("failed to count users: %w", err)
+	}
+	if err := r.db.Model(&models.Group{}).Count(&stats.TotalGroups).Error; err != nil {
+		return nil, fmt.Errorf("failed to count groups: %w", err)
+	}
+	if err := r.db.Model(&models.Expense{}).Count(&stats.TotalExpenses).Error; err != nil {
+		return nil, fmt.Errorf("failed to count expenses: %w", err)
+	}
+
+	// Sum all expense amounts
+	var totalSpent *float64
+	r.db.Model(&models.Expense{}).Select("COALESCE(SUM(amount), 0)").Scan(&totalSpent)
+	if totalSpent != nil {
+		stats.TotalSpent = decimal.NewFromFloat(*totalSpent).Round(2)
+	} else {
+		stats.TotalSpent = decimal.Zero
+	}
+
+	return stats, nil
 }
 
 // DB returns the underlying *gorm.DB for advanced use cases (e.g., migrations).

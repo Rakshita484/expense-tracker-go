@@ -71,6 +71,30 @@ func (h *Handler) ListUsers(c *gin.Context) {
 	})
 }
 
+// GetUserGroups handles GET /api/users/:id/groups
+// Returns all groups the user belongs to.
+func (h *Handler) GetUserGroups(c *gin.Context) {
+	userID, err := parseUintParam(c, "id")
+	if err != nil {
+		return
+	}
+
+	groups, err := h.service.GetUserGroups(userID)
+	if err != nil {
+		slog.Error("Failed to get user groups", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "Failed to get user groups",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{
+		Message: "User groups retrieved successfully",
+		Data:    groups,
+	})
+}
+
 // --- Group Handlers ---
 
 // CreateGroup handles POST /api/groups
@@ -133,6 +157,49 @@ func (h *Handler) AddUserToGroup(c *gin.Context) {
 	c.JSON(http.StatusOK, models.SuccessResponse{
 		Message: "User added to group successfully",
 		Data:    group,
+	})
+}
+
+// GetGroupMembers handles GET /api/groups/:id/members
+// Returns all members of a specific group.
+func (h *Handler) GetGroupMembers(c *gin.Context) {
+	groupID, err := parseUintParam(c, "id")
+	if err != nil {
+		return
+	}
+
+	members, err := h.service.GetGroupMembers(groupID)
+	if err != nil {
+		slog.Error("Failed to get group members", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "Failed to get group members",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{
+		Message: "Group members retrieved successfully",
+		Data:    members,
+	})
+}
+
+// ListGroups handles GET /api/groups
+// Returns all groups with member counts.
+func (h *Handler) ListGroups(c *gin.Context) {
+	groups, err := h.service.ListGroups()
+	if err != nil {
+		slog.Error("Failed to list groups", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "Failed to list groups",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{
+		Message: "Groups retrieved successfully",
+		Data:    groups,
 	})
 }
 
@@ -219,6 +286,49 @@ func (h *Handler) GetSettlements(c *gin.Context) {
 	c.JSON(http.StatusOK, models.SuccessResponse{
 		Message: "Settlements calculated successfully",
 		Data:    settlements,
+	})
+}
+
+// GetGroupExpenses handles GET /api/groups/:id/expenses
+// Returns all expenses for a group with who paid and splits.
+func (h *Handler) GetGroupExpenses(c *gin.Context) {
+	groupID, err := parseUintParam(c, "id")
+	if err != nil {
+		return
+	}
+
+	expenses, err := h.service.GetGroupExpenses(groupID)
+	if err != nil {
+		slog.Error("Failed to get group expenses", "error", err.Error())
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Error:   "Failed to get group expenses",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{
+		Message: "Expenses retrieved successfully",
+		Data:    expenses,
+	})
+}
+
+// GetDashboardStats handles GET /api/dashboard/stats
+// Returns aggregate statistics for the dashboard.
+func (h *Handler) GetDashboardStats(c *gin.Context) {
+	stats, err := h.service.GetDashboardStats()
+	if err != nil {
+		slog.Error("Failed to get dashboard stats", "error", err.Error())
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "Failed to get dashboard stats",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{
+		Message: "Dashboard stats retrieved successfully",
+		Data:    stats,
 	})
 }
 

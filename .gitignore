@@ -39,6 +39,13 @@ expense_tracker.db-journal
 .DS_Store
 Thumbs.db
 
+# Temp/log files
+build_err.txt
+server_log.txt
+
+# Agent files
+.gemini/
+
 # Frontend build artifacts
 frontend/node_modules/
 frontend/dist/

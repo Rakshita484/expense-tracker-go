@@ -17,6 +17,8 @@ A **full-stack expense tracking and debt settlement application** built with Go 
 9. [Example Scenarios](#-example-scenarios)
 10. [Setup & Running Instructions](#-setup--running-instructions)
 11. [Project Structure](#-project-structure)
+12. [AI Prompts Used for Enhancement](#-AI-Prompts-Used-for-Enhancements)
+
 ---
 
 ## 🏗 Architecture Overview
@@ -836,6 +838,12 @@ expense-tracker/
     ├── services/              # API client
     └── components/            # Reusable UI components
 ```
+AI Prompts Used 
+1. "Optimize the settlement algorithm to reduce time complexity and minimize the number of transactions between users."
+2. "Refactor the API error handling to return structured JSON error responses with proper HTTP status codes."
+3. "Suggest improvements for the database schema to handle decimal precision in monetary calculations without floating-point errors."
+4. "Enhance the frontend UI with modern design patterns — add color-coded balance cards (green for creditors, red for debtors) and smooth hover transitions."
+
 ## 📝 License
 
 This project was built for educational and demonstration purposes.
